@@ -4,6 +4,8 @@
     {
         public int listingId { get; set; }
 
+        public DateTime PostingDate { get; set; }
+
         public Cars Car { get; set; }
 
         public User User { get; set; }
