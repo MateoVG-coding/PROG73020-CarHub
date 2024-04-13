@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Entities
 {
-    public class ListingDbContext : IdentityDbContext<Users>
+    public class ListingDbContext : IdentityDbContext<User>
     {
         public ListingDbContext(DbContextOptions<ListingDbContext> options)
             : base(options)
@@ -12,7 +12,7 @@ namespace WebAPI.Entities
 
         public DbSet<Listings> Listings { get; set; }
         public DbSet<Cars> Cars { get; set; }
-        public DbSet<Users> Users { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

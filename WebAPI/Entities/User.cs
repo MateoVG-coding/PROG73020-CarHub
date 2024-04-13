@@ -2,7 +2,7 @@
 
 namespace WebAPI.Entities
 {
-    public class Users : IdentityUser
+    public class User : IdentityUser
     {
         public string? FirstName { get; set; }
 
