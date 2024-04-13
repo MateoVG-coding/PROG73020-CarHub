@@ -94,6 +94,48 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetListings([FromQuery] Filter filter)
+        {
+            IQueryable<Listings> query = _dBcontext.Listings.Include(l => l.Car).Include(l => l.User);
+
+            // Basic filtering
+            if (!string.IsNullOrEmpty(filter.Brand))
+            {
+                query = query.Where(l => l.Car.Brand.ToLower() == filter.Brand.ToLower());
+            }
+
+            if (filter.MinYear.HasValue)
+            {
+                query = query.Where(l => l.Car.Year >= filter.MinYear.Value);
+            }
+
+            if (filter.MaxYear.HasValue)
+            {
+                query = query.Where(l => l.Car.Year <= filter.MaxYear.Value);
+            }
+
+            if (!string.IsNullOrEmpty(filter.Model))
+            {
+                query = query.Where(l => l.Car.Model.ToLower() == filter.Model.ToLower());
+            }
+
+            // Sorting
+            if (filter.SortByDate == true)
+            {
+                query = query.OrderByDescending(l => l.PostingDate);
+            }
+            else
+            {
+                query = query.OrderBy(l => l.listingId);
+            }
+
+            var listings = await query.ToListAsync();
+
+            return Ok(listings);
+        }
+
+
         private bool ListingExists(int id)
         {
             return _dBcontext.Listings.Any(e => e.listingId == id);
