@@ -10,7 +10,7 @@ namespace WebAPI.Extensions
     {
         public static void ConfigureCors(this IServiceCollection services) =>
         services.AddCors(options => {
-            options.AddPolicy("TaskApiCorsPolicy", builder =>
+            options.AddPolicy("WebApiCorsPolicy", builder =>
             builder.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()
