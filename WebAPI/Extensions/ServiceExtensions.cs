@@ -27,7 +27,7 @@ namespace WebAPI.Extensions
                 o.Password.RequiredLength = 10;
                 o.User.RequireUniqueEmail = true;
             })
-            .AddEntityFrameworkStores<CarListingsDbContext>()
+            .AddEntityFrameworkStores<ListingDbContext>()
             .AddDefaultTokenProviders();
         }
 
