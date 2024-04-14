@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Entities;
+using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {
@@ -11,10 +12,37 @@ namespace WebAPI.Controllers
     {
         private readonly ListingDbContext _dBcontext;
 
+        private string GenerateFullUrl(string path)
+        {
+            return $"{Request.Scheme}://{Request.Host}{path}";
+        }
+
         public ListingController(ListingDbContext context)
         {
             _dBcontext = context;
         }
+
+        [HttpGet("/api")]
+        public IActionResult GetListingApiHome()
+        {
+            // Creating a DTO representing the home of the Listing API
+            var apiHomeViewModel = new ListingApiHomeDTO
+            {
+                Links = new Dictionary<string, Link>
+                {
+                    { "self", new Link(GenerateFullUrl("/api"), "self", "GET") },
+                    { "listings", new Link(GenerateFullUrl("/api/listings"), "listings", "GET") },
+                    { "createListing", new Link(GenerateFullUrl("/api/listings"), "createListing", "POST") },
+                    { "updateListing", new Link(GenerateFullUrl("/api/listings/{id}"), "updateListing", "PUT") },
+                    { "deleteListing", new Link(GenerateFullUrl("/api/listings/{id}"), "deleteListing", "DELETE") }
+                },
+                ApiVersion = "1.0",
+                Creator = "Your Company Name"
+            };
+
+            return Ok(apiHomeViewModel);
+        }
+
 
         // POST: api/Listings
         [HttpPost]
@@ -140,6 +168,5 @@ namespace WebAPI.Controllers
         {
             return _dBcontext.Listings.Any(e => e.listingId == id);
         }
-
     }
 }
