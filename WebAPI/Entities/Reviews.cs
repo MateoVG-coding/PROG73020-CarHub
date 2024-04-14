@@ -1,8 +1,7 @@
-﻿using WebAPI.Models;
-
-namespace Review_RatingAPI.Models
+﻿
+namespace WebAPI.Entities
 {
-    public class Review
+    public class Reviews
     {
         public int Id { get; set; }
         public int UserId { get; set; }
@@ -12,6 +11,6 @@ namespace Review_RatingAPI.Models
         public DateTime ReviewTime { get; set; }
 
         // Navigation property
-        public virtual Users User { get; set; }
+        public virtual User? User { get; set; } //make it non-nullable to fix the warning
     }
 }
