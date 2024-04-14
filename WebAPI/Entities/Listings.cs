@@ -1,12 +1,14 @@
-﻿namespace WebAPI.Models
+﻿namespace WebAPI.Entities
 {
     public class Listings
     {
         public int listingId { get; set; }
 
+        public DateTime PostingDate { get; set; }
+
         public Cars Car { get; set; }
 
-        public Users User { get; set; }
+        public User User { get; set; }
 
         public int Value { get; set; }
 
