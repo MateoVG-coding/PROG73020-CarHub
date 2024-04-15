@@ -1,25 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using WebAPI.Entities;
 using WebAPI.Messages;
 using WebAPI.Services;
-
 
 namespace WebAPI.Controllers
 {
     [ApiController()]
     public class AccountApiController : Controller
     {
-        public AccountApiController(IAuthService authenticationService)
+        private readonly IAuthService _authService;
+
+        public AccountApiController(IAuthService authService)
         {
-            _authenticationService = authenticationService;
+            _authService = authService;
         }
 
         [HttpPost("/api/register")]
         public async Task<IActionResult> RegisterUser(UserRegistrationRequest userRegistrationRequest)
         {
-            var result = await _authenticationService.RegisterUser(userRegistrationRequest);
+            var result = await _authService.RegisterUser(userRegistrationRequest);
 
             if (result.Succeeded)
             {
@@ -39,25 +37,16 @@ namespace WebAPI.Controllers
         [HttpPost("/api/login")]
         public async Task<IActionResult> LoginUser(UserLoginRequest loginRequest)
         {
-            bool isSuccessful = await _authenticationService.LoginUser(loginRequest);
+            bool isSuccessful = await _authService.LoginUser(loginRequest);
 
             if (isSuccessful)
             {
-                return Ok(new { Token = await _authenticationService.CreateToken(true) });
+                return Ok(new { Message = "Authentication successful." });
             }
             else
             {
-                return Unauthorized();
+                return Unauthorized(new { Message = "Invalid username or password." });
             }
         }
-
-        [HttpPost("/api/refresh-token")]
-        public async Task<IActionResult> ProcessTokenRefresh([FromBody]TokenInfo tokenInfo)
-        {
-            TokenInfo refreshedToken = await _authenticationService.RefreshToken(tokenInfo);
-            return Ok(refreshedToken);
-        }
-
-        private IAuthService _authenticationService;
     }
 }

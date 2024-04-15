@@ -17,7 +17,6 @@ builder.Services.Configure<ApiBehaviorOptions>(options => {
 });
 
 builder.Services.ConfigureIdentity();
-builder.Services.ConfigureJWT(builder.Configuration);
 
 builder.Services.AddControllers(config => {
     config.RespectBrowserAcceptHeader = true;
