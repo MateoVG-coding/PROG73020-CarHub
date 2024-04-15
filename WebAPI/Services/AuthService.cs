@@ -11,7 +11,7 @@ using WebAPI.Messages;
 
 namespace WebAPI.Services
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
         public AuthService(UserManager<User> userManager, IConfiguration configuration)
         {

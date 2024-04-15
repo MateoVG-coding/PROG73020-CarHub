@@ -10,7 +10,7 @@ namespace WebAPI.Extensions
     {
         public static void ConfigureCors(this IServiceCollection services) =>
         services.AddCors(options => {
-            options.AddPolicy("WebApiCorsPolicy", builder =>
+            options.AddPolicy("CarHubApiCorsPolicy", builder =>
             builder.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()

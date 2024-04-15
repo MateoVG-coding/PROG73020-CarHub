@@ -5,50 +5,50 @@ using WebAPI.Entities;
 using WebAPI.Extensions;
 using WebAPI.Services;
 
-
-// TO DO: Honestly idk how this works
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services
+builder.Services.ConfigureCors();
+
 builder.Services.AddDbContext<ListingDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ListingDbContext")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CarHubDbContext")));
 
-builder.Services.AddControllers();
-
-// Add CORS policy
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowListingClients",
-    builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
+builder.Services.Configure<ApiBehaviorOptions>(options => {
+    options.SuppressModelStateInvalidFilter = true;
 });
+
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration);
+
+builder.Services.AddControllers(config => {
+    config.RespectBrowserAcceptHeader = true;
+    config.ReturnHttpNotAcceptable = true;
+});
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseRouting();
+app.UseCors("AllowCarHubClients");
 
-// Enable CORS
-app.UseCors("AllowListingClients");
+app.UseHttpsRedirection();
+//app.UseStaticFiles();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.All
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+app.MapControllers();
 
 app.Run();
