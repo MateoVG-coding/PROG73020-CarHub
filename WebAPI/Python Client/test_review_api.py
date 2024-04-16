@@ -1,6 +1,6 @@
 import requests
 
-class Review_Api_Test:
+class test_review_api:
     def __init__(self, base_url):
         self.base_url = base_url
 
@@ -35,7 +35,7 @@ class Review_Api_Test:
         return "Error deleting review", response.json()
         
 base_url = 'http://localhost:5000/api' 
-client = Review_Api_Test(base_url)
+client = test_review_api(base_url)
 
 # Test for get all reviews
 print(client.get_all_reviews())
