@@ -76,7 +76,8 @@
             make: $('#make').val(),
             model: $('#model').val(),
             year: $('#year').val(),
-            price: $('#price').val()
+            price: $('#price').val(),
+            description: $('#description').val()
         };
 
         const createListingPromise = fetch(_carApiUrl, {

@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Listing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        input, button {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add New Car Listing</h1>
+    <form id="newListingForm">
+        <input type="text" id="newBrand" placeholder="Brand" required>
+        <input type="text" id="newModel" placeholder="Model" required>
+        <input type="number" id="newYear" placeholder="Year" required>
+        <input type="number" id="newValue" placeholder="Value" required>
+        <input type="text" id="newDescription" placeholder="Description">
+        <button type="button" onclick="addListing()">Submit Listing</button>
+    </form>
+    <button onclick="window.location.href='index.html'">Back to Listings</button>
+
+    <script>
+        const addListing = async () => {
+            const newBrand = document.getElementById('newBrand').value;
+            const newModel = document.getElementById('newModel').value;
+            const newYear = document.getElementById('newYear').value;
+            const newValue = document.getElementById('newValue').value;
+            const newDescription = document.getElementById('newDescription').value;
+
+            const listing = {
+                car: { brand: newBrand, model: newModel, year: parseInt(newYear) },
+                value: parseInt(newValue),
+                description: newDescription
+            };
+
+            try {
+                const response = await fetch('/api/listings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(listing)
+                });
+
+                if (response.ok) {
+                    alert('Listing added successfully!');
+                    window.location.href = 'index.html'; // Redirect back to listings page
+                } else {
+                    throw new Error('Failed to create a new listing');
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        };
+    </script>
+</body>
+</html>
