@@ -8,7 +8,7 @@
 
         public int CarID { get; set; }
 
-        public int UserID { get; set; }
+        public string Username { get; set; } = String.Empty;
 
         public int Value { get; set; }
 
