@@ -17,6 +17,26 @@ namespace WebAPI.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Configure Relationships
+
+            // Listings - Cars (One-to-One or Many-to-One)
+            modelBuilder.Entity<Listings>()
+                .HasOne(l => l.Car)
+                .WithMany()
+                .HasForeignKey(l => l.CarId); // Assuming CarId is the foreign key property in Listings
+
+            // Listings - User (Many-to-One)
+            modelBuilder.Entity<Listings>()
+                .HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.Username); // Assuming UserId is the foreign key property in Listings
+
+            // Reviews - User (Many-to-One)
+            modelBuilder.Entity<Reviews>()
+                .HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.Username); // Assuming UserId is the foreign key property in Reviews
         }
     }
 }

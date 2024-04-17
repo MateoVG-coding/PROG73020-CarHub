@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
             _dBcontext.Listings.Add(listing);
             await _dBcontext.SaveChangesAsync();
 
-            return CreatedAtAction("GetListing", new { id = listing.listingId }, listing);
+            return CreatedAtAction("GetListing", new { id = listing.listingsId }, listing); ;
         }
 
         // GET: api/Listings/5
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
             var listing = await _dBcontext.Listings
                 .Include(l => l.Car)  // Including details of Car
                 .Include(l => l.User) // Including details of User
-                .FirstOrDefaultAsync(l => l.listingId == id);
+                .FirstOrDefaultAsync(l => l.listingsId == id);
 
             if (listing == null)
             {
@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateListing(int id, [FromBody] Listings listing)
         {
-            if (id != listing.listingId)
+            if (id != listing.listingsId)
             {
                 return BadRequest();
             }
@@ -155,7 +155,7 @@ namespace WebAPI.Controllers
             }
             else
             {
-                query = query.OrderBy(l => l.listingId);
+                query = query.OrderBy(l => l.listingsId); 
             }
 
             var listings = await query.ToListAsync();
@@ -166,7 +166,7 @@ namespace WebAPI.Controllers
 
         private bool ListingExists(int id)
         {
-            return _dBcontext.Listings.Any(e => e.listingId == id);
+            return _dBcontext.Listings.Any(e => e.listingsId == id);
         }
     }
 }
