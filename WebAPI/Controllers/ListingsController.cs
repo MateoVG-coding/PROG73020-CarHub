@@ -189,6 +189,11 @@ namespace WebAPI.Controllers
                 query = query.Where(l => l.Car.Model.ToLower() == filter.Model.ToLower());
             }
 
+            if (!string.IsNullOrEmpty(filter.Username))
+            {
+                query = query.Where(l => l.Username.ToLower() == filter.Username.ToLower());
+            }
+
             // Sorting
             if (filter.SortByDate == true)
             {

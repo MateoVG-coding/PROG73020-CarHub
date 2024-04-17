@@ -15,15 +15,18 @@
     var _registerLink = $('#registerLink');
     var _registerModal = $('#registerModal').modal();
 
+    var _myListings = $('#myListings');
+
     // Function to handle form submission and apply filters
     var applyFilters = function () {
         // Get filter values from form inputs
         var filter = {
             SortByDate: $('#sortByDate').is(':checked'),
-            Model: $('#model').val(),
+            Model: $('#modelFilter').val(),
             MinYear: $('#minYear').val(),
             MaxYear: $('#maxYear').val(),
-            Brand: $('#brand').val()
+            Brand: $('#brandFilter').val(),
+            Username: $('#usernameFilter').val()
         };
 
         // Make a GET request to the API with the filter parameters
@@ -48,28 +51,12 @@
                         // Construct HTML for each listing with update and delete buttons
                         let listingHtml = '<li>' +
                             listings[i].car.brand + ' ' + listings[i].car.model + ' - Year: ' +
-                            listings[i].car.year + ', Price: ' + listings[i].value +
-                            '<button class="update-btn" data-id="' + listings[i].listingsId + '">Update</button>' +
-                            '<button class="delete-btn" data-id="' + listings[i].listingsId + '">Delete</button>' +
+                            listings[i].car.year + ', Price: ' + listings[i].value + ', Posted by: ' + listings[i].username +
                             '</li>';
 
                         // Append the listing HTML to the _carList element
                         _carList.append(listingHtml);
                     }
-
-                    // Event listener for update buttons
-                    $('#update-btn').click(function () {
-                        let listingId = $(this).data('id');
-                        // Trigger the update event listener
-                        $('#updateListingBtn').trigger('click', { id: listingId });
-                    });
-
-                    // Event listener for delete buttons
-                    $('#delete-btn').click(function () {
-                        let listingId = $(this).data('id');
-                        // Trigger the delete event listener
-                        $('#deleteListingBtn').trigger('click', { id: listingId });
-                    });
                 }
             })
             .catch((error) => {
@@ -133,7 +120,7 @@
                 }
             })
             .then(data => {
-                console.log(data); 
+                console.log(data);
             })
             .catch(error => {
                 console.error('Error fetching API home:', error);
@@ -164,35 +151,60 @@
                         // Construct HTML for each listing with update and delete buttons
                         let listingHtml = '<li>' +
                             listings[i].car.brand + ' ' + listings[i].car.model + ' - Year: ' +
-                            listings[i].car.year + ', Price: ' + listings[i].value +
-                            '<button class="update-btn" data-id="' + listings[i].listingsId + '">Update</button>' +
-                            '<button class="delete-btn" data-id="' + listings[i].listingsId + '">Delete</button>' +
+                            listings[i].car.year + ', Price: ' + listings[i].value + ', Posted by: ' + listings[i].username +
                             '</li>';
 
                         // Append the listing HTML to the _carList element
                         _carList.append(listingHtml);
                     }
-
-                    // Event listener for update buttons
-                    $('#update-btn').click(function () {
-                        let listingId = $(this).data('id');
-                        // Trigger the update event listener
-                        $('#updateListingBtn').trigger('click', { id: listingId });
-                    });
-
-                    // Event listener for delete buttons
-                    $('#delete-btn').click(function () {
-                        let listingId = $(this).data('id');
-                        // Trigger the delete event listener
-                        $('#deleteListingBtn').trigger('click', { id: listingId });
-                    });
                 }
             })
     };
 
+    var loadMyListings = function (username) {
+        var filter = {
+            Username: username
+        };
+
+        // Make a GET request to the API with the filter parameters
+        fetch(_carApiUrl + "/All?" + new URLSearchParams(filter), {
+            method: 'GET',
+            mode: 'cors'
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json(); // Parse response body as JSON
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+            .then((listings) => {
+                _myListings.empty();
+
+                if (listings.length === 0) {
+                    _myListings.append('<li>No listings available.</li>');
+                } else {
+                    for (let i = 0; i < listings.length; i++) {
+                        // Construct HTML for each listing with update and delete buttons
+                        let listingHtml = '<li>' + 'Listing ID: ' + listings[i].listingsId + ' | ' + 'Car: ' +
+                            listings[i].car.brand + ' ' + listings[i].car.model + ' - Year: ' +
+                            listings[i].car.year + '- Price: ' + listings[i].value +
+                            '</li>';
+
+                        // Append the listing HTML to the _carList element
+                        _myListings.append(listingHtml);
+                    }
+                }
+            })
+            .catch((error) => {
+                console.log('Error applying filters:', error);
+            });
+    }
+
     loadApiHome();
     loadCarList();
     loadReviewList();
+
 
     $('#createListingBtn').click(function () {
         let newListing = {
@@ -227,9 +239,10 @@
     });
 
     $('#deleteListingBtn').click(function () {
-        let listingId = $('#listingIdToDelete').val();
+        // Get the Listing ID from the input field
+        let listingId = $('#listingId').val();
 
-        const deleteListingPromise = fetch(`${_carApiUrl}/${listingId}`, {
+        const deleteListingPromise = fetch(_carApiUrl + "/" + listingId, {
             method: 'DELETE',
             mode: 'cors'
         });
@@ -248,16 +261,18 @@
     });
 
     $('#updateListingBtn').click(function () {
-        let listingId = $('#listingIdToUpdate').val();
+        // Get the Listing ID from the input field
+        let listingId = $('#listingId').val();
+
         let updatedListing = {
-            CarBrand: $('#updatedMake').val(),
-            CarModel: $('#updatedMode').val(),
-            CarYear: $('#updatedYear').val(),
-            Value: $('#updatedPrice').val(),
-            Description: $('#updatedDescription').val()
+            CarBrand: $('#make').val(),
+            CarModel: $('#version').val(),
+            CarYear: $('#year').val(),
+            Value: $('#price').val(),
+            Description: $('#description').val()
         };
 
-        const updateListingPromise = fetch(`${_carApiUrl}/${listingId}`, {
+        const updateListingPromise = fetch(_carApiUrl + "/" + listingId, {
             method: 'PUT',
             mode: 'cors',
             headers: {
@@ -278,6 +293,7 @@
                 console.log(`update listing; resp code: ${response.status}`);
             });
     });
+
 
     $('#createListingBtn').click(function () {
         let newListing = {
@@ -381,7 +397,7 @@
 
     $('#loginBtn').click(function () {
         let loginRequest = {
-            userName: $('#username').val(),
+            username: $('#username').val(),
             password: $('#password').val()
         };
 
@@ -407,9 +423,10 @@
                 _newTaskItemMsg.attr('class', 'text-success');
                 _newTaskItemMsg.text('You are logged in');
                 setLoginState(true);
+                loadMyListings($('#username').val());
+                run($('#username').val());
                 $('#password').val('');
 
-                run();
                 _newTaskItemMsg.fadeOut(10000);
             })
             .catch((response) => {
@@ -459,7 +476,6 @@
                 setLoginState(true);
                 $('#password').val('');
 
-                run();
                 _newTaskItemMsg.fadeOut(10000);
             })
             .catch((response) => {
@@ -471,12 +487,12 @@
             });
     });
 
-    let run = function () {
+
+    let run = function (username) {
         // then setup a timer load tasks every 1 sec:
         setInterval(function () {
             if (_isUserLoggedIn) {
-                loadCarList();
-                loadReviewList();
+                loadMyListings(username);
             }
         }, 1000);
     };
