@@ -57,6 +57,8 @@ namespace WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
+            // TO DO: Havent been able to use the cookies, need to implement cookie usage to access user id
+
             /*
             var userId = HttpContext.Request.Cookies["UserId"];
 

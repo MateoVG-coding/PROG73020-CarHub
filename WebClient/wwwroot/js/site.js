@@ -38,16 +38,38 @@
                     return Promise.reject(response);
                 }
             })
-            .then((cars) => {
+            .then((listings) => {
                 _carList.empty();
 
-                if (cars.length === 0) {
-                    _carList.append('<li>No cars available.</li>');
+                if (listings.length === 0) {
+                    _carList.append('<li>No listings available.</li>');
                 } else {
-                    for (let i = 0; i < cars.length; i++) {
-                        _carList.append('<li>' + cars[i].CarBrand + ' ' + cars[i].CarModel + ' - Year: ' +
-                            cars[i].CarYear + ', Price: ' + cars[i].Value + '</li>');
+                    for (let i = 0; i < listings.length; i++) {
+                        // Construct HTML for each listing with update and delete buttons
+                        let listingHtml = '<li>' +
+                            listings[i].car.brand + ' ' + listings[i].car.model + ' - Year: ' +
+                            listings[i].car.year + ', Price: ' + listings[i].value +
+                            '<button class="update-btn" data-id="' + listings[i].listingsId + '">Update</button>' +
+                            '<button class="delete-btn" data-id="' + listings[i].listingsId + '">Delete</button>' +
+                            '</li>';
+
+                        // Append the listing HTML to the _carList element
+                        _carList.append(listingHtml);
                     }
+
+                    // Event listener for update buttons
+                    $('#update-btn').click(function () {
+                        let listingId = $(this).data('id');
+                        // Trigger the update event listener
+                        $('#updateListingBtn').trigger('click', { id: listingId });
+                    });
+
+                    // Event listener for delete buttons
+                    $('#delete-btn').click(function () {
+                        let listingId = $(this).data('id');
+                        // Trigger the delete event listener
+                        $('#deleteListingBtn').trigger('click', { id: listingId });
+                    });
                 }
             })
             .catch((error) => {
@@ -139,15 +161,33 @@
                     _carList.append('<li>No listings available.</li>');
                 } else {
                     for (let i = 0; i < listings.length; i++) {
-                        // Access properties of the Listings object correctly
-                        _carList.append('<li>' + listings[i].car.brand + ' ' + listings[i].car.model + ' - Year: ' +
-                            listings[i].car.year + ', Price: ' + listings[i].value + '</li>');
+                        // Construct HTML for each listing with update and delete buttons
+                        let listingHtml = '<li>' +
+                            listings[i].car.brand + ' ' + listings[i].car.model + ' - Year: ' +
+                            listings[i].car.year + ', Price: ' + listings[i].value +
+                            '<button class="update-btn" data-id="' + listings[i].listingsId + '">Update</button>' +
+                            '<button class="delete-btn" data-id="' + listings[i].listingsId + '">Delete</button>' +
+                            '</li>';
+
+                        // Append the listing HTML to the _carList element
+                        _carList.append(listingHtml);
                     }
+
+                    // Event listener for update buttons
+                    $('#update-btn').click(function () {
+                        let listingId = $(this).data('id');
+                        // Trigger the update event listener
+                        $('#updateListingBtn').trigger('click', { id: listingId });
+                    });
+
+                    // Event listener for delete buttons
+                    $('#delete-btn').click(function () {
+                        let listingId = $(this).data('id');
+                        // Trigger the delete event listener
+                        $('#deleteListingBtn').trigger('click', { id: listingId });
+                    });
                 }
             })
-            .catch((response) => {
-                console.log(`fetch car list; resp code: ${response.status}`);
-            });
     };
 
     loadApiHome();
