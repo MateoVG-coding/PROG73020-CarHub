@@ -45,7 +45,7 @@ print(client.get_review(1))
 
 # Test for post a review
 review_data = {
-    "UserId": 1,
+    "Username": "testUser",
     "ListingId": 1,
     "Content": "Great experience!",
     "Rating": 5,
@@ -56,7 +56,7 @@ print(client.create_review(review_data))
 # Test for update a review
 update_data = {
     "Id": 1,
-    "UserId": 1,
+    "Username": "testUser",
     "ListingId": 1,
     "Content": "Updated review content.",
     "Rating": 4,
