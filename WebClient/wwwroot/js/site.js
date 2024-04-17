@@ -4,8 +4,8 @@
     var _reviewList = $('#reviewList');
     var _reviewApiUrl = 'https://localhost:5001/api/Reviews';
 
-    var loadReviewList = function () {
-        const loadReviewsPromise = fetch(_reviewApiUrl, {
+    var loadReviewList = function (username) {
+        const loadReviewsPromise = fetch(_reviewApiUrl + '?username=' + username, {
             mode: 'cors',
             headers: {
                 'Accept': 'application/json'
@@ -35,7 +35,6 @@
                 console.log(`fetch review list; resp code: ${response.status}`);
             });
     };
-
     var loadCarList = function () {
         const loadCarsPromise = fetch(_carApiUrl, {
             mode: 'cors',
