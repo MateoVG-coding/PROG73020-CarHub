@@ -188,10 +188,11 @@
     $('#updateListingBtn').click(function () {
         let listingId = $('#listingIdToUpdate').val();
         let updatedListing = {
-            make: $('#updatedMake').val(),
-            model: $('#updatedModel').val(),
-            year: $('#updatedYear').val(),
-            price: $('#updatedPrice').val()
+            CarBrand: $('#updatedMake').val(),
+            CarModel: $('#updatedMode').val(),
+            CarYear: $('#updatedYear').val(),
+            Value: $('#updatedPrice').val(),
+            Description: $('#updatedDescription').val()
         };
 
         const updateListingPromise = fetch(`${_carApiUrl}/${listingId}`, {
