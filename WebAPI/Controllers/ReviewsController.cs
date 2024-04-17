@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
         {
             if (!string.IsNullOrEmpty(username))
             {
-                return await _context.Reviews.Where(r => r.User.UserName == username).ToListAsync();
+                return await _context.Reviews.Where(r => r.Username == username).ToListAsync();
             }
             else
             {

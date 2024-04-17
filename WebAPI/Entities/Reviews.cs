@@ -10,7 +10,6 @@ namespace WebAPI.Entities
 
         // Navigation property
 
-        public User User { get; set; }
         public string Username { get; set; } = string.Empty; //make it non-nullable to fix the warning
     }
 }

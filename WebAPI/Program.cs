@@ -9,6 +9,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureCors();
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 builder.Services.AddDbContext<ListingDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CarHubDbContext")));
 
@@ -35,7 +47,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseCors("AllowCarHubClients");
+app.UseCors("AllowAll");
+
 
 app.UseHttpsRedirection();
 //app.UseStaticFiles();

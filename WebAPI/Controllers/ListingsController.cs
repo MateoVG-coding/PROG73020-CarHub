@@ -6,9 +6,9 @@ using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Listings")]
     [ApiController]
-    public class ListingController : ControllerBase
+    public class ListingsController : ControllerBase
     {
         private readonly ListingDbContext _dBcontext;
 
@@ -17,12 +17,12 @@ namespace WebAPI.Controllers
             return $"{Request.Scheme}://{Request.Host}{path}";
         }
 
-        public ListingController(ListingDbContext context)
+        public ListingsController(ListingDbContext context)
         {
             _dBcontext = context;
         }
 
-        [HttpGet("/api")]
+        [HttpGet]
         public IActionResult GetListingApiHome()
         {
             // Creating a DTO representing the home of the Listing API
@@ -30,33 +30,36 @@ namespace WebAPI.Controllers
             {
                 Links = new Dictionary<string, Link>
                 {
-                    { "self", new Link(GenerateFullUrl("/api"), "self", "GET") },
-                    { "listings", new Link(GenerateFullUrl("/api/listings"), "listings", "GET") },
-                    { "createListing", new Link(GenerateFullUrl("/api/listings"), "createListing", "POST") },
-                    { "updateListing", new Link(GenerateFullUrl("/api/listings/{id}"), "updateListing", "PUT") },
-                    { "deleteListing", new Link(GenerateFullUrl("/api/listings/{id}"), "deleteListing", "DELETE") }
+                    { "self", new Link(GenerateFullUrl("/api/Listings"), "self", "GET") },
+                    { "lisings", new Link(GenerateFullUrl("/api/Listings/All"), "listings", "GET") },
+                    { "createListing", new Link(GenerateFullUrl("/api/Listings"), "createListing", "POST") },
+                    { "updateListing", new Link(GenerateFullUrl("/api/Listings/{id}"), "updateListing", "PUT") },
+                    { "deleteListing", new Link(GenerateFullUrl("/api/Listings/{id}"), "deleteListing", "DELETE") }
                 },
                 ApiVersion = "1.0",
-                Creator = "Your Company Name"
+                Creator = "Group 5"
             };
 
             return Ok(apiHomeViewModel);
         }
 
 
-        // POST: api/Listings
         [HttpPost]
-        public async Task<IActionResult> CreateListing([FromBody] Listings listing)
+        public async Task<IActionResult> CreateListing([FromBody] ListingRequest listing)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _dBcontext.Listings.Add(listing);
+            // TO DO: Implement a way to store all information into a Listing object
+
+            var newListing = new Listings();
+
+            _dBcontext.Listings.Add(newListing);
             await _dBcontext.SaveChangesAsync();
 
-            return CreatedAtAction("GetListing", new { id = listing.listingsId }, listing); ;
+            return CreatedAtAction("GetListing", new { id = newListing.listingsId }, newListing); ;
         }
 
         // GET: api/Listings/5
@@ -65,7 +68,6 @@ namespace WebAPI.Controllers
         {
             var listing = await _dBcontext.Listings
                 .Include(l => l.Car)  // Including details of Car
-                .Include(l => l.User) // Including details of User
                 .FirstOrDefaultAsync(l => l.listingsId == id);
 
             if (listing == null)
@@ -122,10 +124,10 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet]
+        [HttpGet("All")]
         public async Task<IActionResult> GetListings([FromQuery] Filter filter)
         {
-            IQueryable<Listings> query = _dBcontext.Listings.Include(l => l.Car).Include(l => l.User);
+            IQueryable<Listings> query = _dBcontext.Listings.Include(l => l.Car);
 
             // Basic filtering
             if (!string.IsNullOrEmpty(filter.Brand))

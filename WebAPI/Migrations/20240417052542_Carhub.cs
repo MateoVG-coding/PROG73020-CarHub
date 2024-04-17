@@ -68,6 +68,22 @@ namespace WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rating = table.Column<double>(type: "float", nullable: false),
+                    ReviewTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -174,28 +190,6 @@ namespace WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Rating = table.Column<double>(type: "float", nullable: false),
-                    ReviewTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reviews_AspNetUsers_Username",
-                        column: x => x.Username,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Listings",
                 columns: table => new
                 {
@@ -203,19 +197,13 @@ namespace WebAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PostingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CarId = table.Column<int>(type: "int", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Value = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Listings", x => x.listingsId);
-                    table.ForeignKey(
-                        name: "FK_Listings_AspNetUsers_Username",
-                        column: x => x.Username,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Listings_Cars_CarId",
                         column: x => x.CarId,
@@ -267,16 +255,6 @@ namespace WebAPI.Migrations
                 name: "IX_Listings_CarId",
                 table: "Listings",
                 column: "CarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Listings_Username",
-                table: "Listings",
-                column: "Username");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_Username",
-                table: "Reviews",
-                column: "Username");
         }
 
         /// <inheritdoc />
@@ -307,10 +285,10 @@ namespace WebAPI.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Cars");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Cars");
         }
     }
 }

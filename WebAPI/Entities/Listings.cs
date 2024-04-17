@@ -14,8 +14,6 @@ namespace WebAPI.Entities
 
         public string Username { get; set; } = string.Empty;
 
-        public User User { get; set; }
-
         public int Value { get; set; }
 
         public string? Description { get; set; }

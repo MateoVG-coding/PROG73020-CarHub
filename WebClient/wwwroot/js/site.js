@@ -4,6 +4,46 @@
     var _reviewList = $('#reviewList');
     var _reviewApiUrl = 'https://localhost:5001/api/Reviews';
 
+    // Function to handle form submission and apply filters
+    var applyFilters = function () {
+        // Get filter values from form inputs
+        var filter = {
+            SortByDate: $('#sortByDate').is(':checked'),
+            Model: $('#model').val(),
+            MinYear: $('#minYear').val(),
+            MaxYear: $('#maxYear').val(),
+            Brand: $('#brand').val()
+        };
+
+        // Make a GET request to the API with the filter parameters
+        fetch(_carApiUrl + "/All?" + new URLSearchParams(filter), {
+            method: 'GET',
+            mode: 'cors'
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json(); // Parse response body as JSON
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+            .then((cars) => {
+                _carList.empty();
+
+                if (cars.length === 0) {
+                    _carList.append('<li>No cars available.</li>');
+                } else {
+                    for (let i = 0; i < cars.length; i++) {
+                        _carList.append('<li>' + cars[i].CarBrand + ' ' + cars[i].CarModel + ' - Year: ' +
+                            cars[i].CarYear + ', Price: ' + cars[i].Value + '</li>');
+                    }
+                }
+            })
+            .catch((error) => {
+                console.log('Error applying filters:', error);
+            });
+    };
+
     var loadReviewList = function (username) {
         const loadReviewsPromise = fetch(_reviewApiUrl + '?username=' + username, {
             mode: 'cors',
@@ -35,8 +75,30 @@
                 console.log(`fetch review list; resp code: ${response.status}`);
             });
     };
+    var loadApiHome = function () {
+        fetch(_carApiUrl, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to fetch API home');
+                }
+            })
+            .then(data => {
+                console.log(data); 
+            })
+            .catch(error => {
+                console.error('Error fetching API home:', error);
+            });
+    };
     var loadCarList = function () {
-        const loadCarsPromise = fetch(_carApiUrl, {
+        const loadCarsPromise = fetch(_carApiUrl + "/All", {
             mode: 'cors',
             headers: {
                 'Accept': 'application/json'
@@ -57,8 +119,8 @@
                     _carList.append('<li>No cars available.</li>');
                 } else {
                     for (let i = 0; i < cars.length; i++) {
-                        _carList.append('<li>' + cars[i].make + ' ' + cars[i].model + ' - Year: ' +
-                            cars[i].year + ', Price: ' + cars[i].price + '</li>');
+                        _carList.append('<li>' + cars[i].CarBrand + ' ' + cars[i].CarModel + ' - Year: ' +
+                            cars[i].CarYear + ', Price: ' + cars[i].Value + '</li>');
                     }
                 }
             })
@@ -67,16 +129,17 @@
             });
     };
 
+    loadApiHome();
     loadCarList();
     loadReviewList();
 
     $('#createListingBtn').click(function () {
         let newListing = {
-            make: $('#make').val(),
-            model: $('#model').val(),
-            year: $('#year').val(),
-            price: $('#price').val(),
-            description: $('#description').val()
+            CarBrand: $('#make').val(),
+            CarModel: $('#model').val(),
+            CarYear: $('#year').val(),
+            Value: $('#price').val(),
+            Description: $('#description').val()
         };
 
         const createListingPromise = fetch(_carApiUrl, {
@@ -230,4 +293,22 @@
                 console.log(`update review; resp code: ${response.status}`);
             });
     });
+
+    // Event listener for form submission
+    $('#filterForm').submit(function (event) {
+        // Prevent default form submission behavior
+        event.preventDefault();
+
+        // Apply filters when the form is submitted
+        applyFilters();
+    });
+
+    // Event listener for applying filters using the button
+    $('#applyFiltersBtn').click(function () {
+        // Apply filters when the button is clicked
+        applyFilters();
+    });
+
 });
+
+

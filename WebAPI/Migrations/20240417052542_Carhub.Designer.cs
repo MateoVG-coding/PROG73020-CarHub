@@ -12,7 +12,7 @@ using WebAPI.Entities;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(ListingDbContext))]
-    [Migration("20240417010733_Carhub")]
+    [Migration("20240417052542_Carhub")]
     partial class Carhub
     {
         /// <inheritdoc />
@@ -201,7 +201,7 @@ namespace WebAPI.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Value")
                         .HasColumnType("int");
@@ -209,8 +209,6 @@ namespace WebAPI.Migrations
                     b.HasKey("listingsId");
 
                     b.HasIndex("CarId");
-
-                    b.HasIndex("Username");
 
                     b.ToTable("Listings");
                 });
@@ -235,11 +233,9 @@ namespace WebAPI.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Username");
 
                     b.ToTable("Reviews");
                 });
@@ -374,26 +370,7 @@ namespace WebAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebAPI.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("Username")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Car");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("WebAPI.Entities.Reviews", b =>
-                {
-                    b.HasOne("WebAPI.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("Username")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
