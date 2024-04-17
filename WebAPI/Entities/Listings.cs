@@ -6,9 +6,9 @@
 
         public DateTime PostingDate { get; set; }
 
-        public Cars Car { get; set; }
+        public int CarID { get; set; }
 
-        public User User { get; set; }
+        public int UserID { get; set; }
 
         public int Value { get; set; }
 
