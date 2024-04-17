@@ -31,6 +31,7 @@
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="#" id="loginLink">Login</a>
+                            <a class="nav-link text-dark" href="#" id="registerLink">Register</a>
                         </li>
                     </ul>
                 </div>
@@ -70,6 +71,52 @@
             </div>
         </div>
     </div>
+
+    <!-- Register Modal content -->
+    <div id="registerModal" class="modal fade" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="registerModalLabel">Create an Account</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="registerUsername">Username:</label>
+                            <input type="text" class="form-control" name="registerUsername" id="registerUsername" placeholder="Enter username.." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email:</label>
+                            <input type="email" class="form-control" name="registerEmail" id="registerEmail" placeholder="Enter email.." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password:</label>
+                            <input type="password" class="form-control" name="registerPassword" id="registerPassword" placeholder="Enter password.." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerFirstName">First Name:</label>
+                            <input type="text" class="form-control" name="registerFirstName" id="registerFirstName" placeholder="Enter first name.." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerLastName">Last Name:</label>
+                            <input type="text" class="form-control" name="registerLastName" id="registerLastName" placeholder="Enter last name.." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phoneNumber">Phone Number:</label>
+                            <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" placeholder="Enter phone number">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="registerBtn" class="btn btn-primary" data-bs-dismiss="modal">Register</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <footer class="border-top footer text-muted">
         <div class="container">

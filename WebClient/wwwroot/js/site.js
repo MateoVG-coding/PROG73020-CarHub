@@ -1,8 +1,19 @@
 ﻿$(document).ready(function () {
+    var _newTaskItemMsg = $('#listingItemMsg');
+
     var _carList = $('#carList');
     var _carApiUrl = 'https://localhost:5001/api/Listings';
+
     var _reviewList = $('#reviewList');
     var _reviewApiUrl = 'https://localhost:5001/api/Reviews';
+
+    var _loginUrl = 'https://localhost:5001/api/login';
+    var _loginLink = $('#loginLink');
+    var _loginModal = $('#loginModal').modal();
+
+    var _registerUrl = 'https://localhost:5001/api/register';
+    var _registerLink = $('#registerLink');
+    var _registerModal = $('#registerModal').modal();
 
     // Function to handle form submission and apply filters
     var applyFilters = function () {
@@ -42,6 +53,15 @@
             .catch((error) => {
                 console.log('Error applying filters:', error);
             });
+    };
+
+    var setLoginState = function (isLoggedIn) {
+        _isUserLoggedIn = isLoggedIn;
+        if (isLoggedIn) {
+            _loginLink.text('Logout');
+        } else {
+            _loginLink.text('Login');
+        }
     };
 
     var loadReviewList = function (username) {
@@ -309,6 +329,101 @@
         applyFilters();
     });
 
+    $('#loginLink').click(function () {
+        _loginModal.modal('show');
+    });
+
+    $('#loginBtn').click(function () {
+        let loginRequest = {
+            userName: $('#username').val(),
+            password: $('#password').val()
+        };
+
+        const loginPromise = fetch(_loginUrl, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(loginRequest)
+        });
+
+        loginPromise.then((response) => {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                return Promise.reject(response);
+            }
+        })
+            .then((tokenInfo) => {
+                _currentAccessToken = tokenInfo.token;
+
+                _newTaskItemMsg.attr('class', 'text-success');
+                _newTaskItemMsg.text('You are logged in');
+                setLoginState(true);
+                $('#password').val('');
+
+                run();
+                _newTaskItemMsg.fadeOut(10000);
+            })
+            .catch((response) => {
+                console.log(`fetch API home page; resp code: ${response.status}`);
+
+                _newTaskItemMsg.attr('class', 'text-danger');
+                _newTaskItemMsg.text('Hmmm, there was a problem logging you in.');
+                _newTaskItemMsg.fadeOut(10000);
+            });
+    });
+
+    $('#registerLink').click(function () {
+        _registerModal.modal('show');
+    });
+
+    $('#registerBtn').click(function () {
+        let registerRequest = {
+            userName: $('#registerUsername').val(),
+            password: $('#registerPassword').val(),
+            email: $('#registerEmail').val(),
+            firstName: $('#registerFirstName').val(),
+            lastName: $('#registerLastName').val(),
+            phoneNumber: $('#phoneNumber').val()
+        };
+
+        const registerPromise = fetch(_registerUrl, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(registerRequest)
+        });
+
+        registerPromise.then((response) => {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                return Promise.reject(response);
+            }
+        })
+            .then((tokenInfo) => {
+                _currentAccessToken = tokenInfo.token;
+
+                _newTaskItemMsg.attr('class', 'text-success');
+                _newTaskItemMsg.text('You are registered');
+                setLoginState(true);
+                $('#password').val('');
+
+                run();
+                _newTaskItemMsg.fadeOut(10000);
+            })
+            .catch((response) => {
+                console.log(`fetch API home page; resp code: ${response.status}`);
+
+                _newTaskItemMsg.attr('class', 'text-danger');
+                _newTaskItemMsg.text('Hmmm, there was a problem logging you in.');
+                _newTaskItemMsg.fadeOut(10000);
+            });
+    });
 });
 
 
