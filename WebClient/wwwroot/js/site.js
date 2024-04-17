@@ -156,7 +156,7 @@
     $('#createListingBtn').click(function () {
         let newListing = {
             CarBrand: $('#make').val(),
-            CarModel: $('#model').val(),
+            CarModel: $('#version').val(),
             CarYear: $('#year').val(),
             Value: $('#price').val(),
             Description: $('#description').val()
@@ -168,7 +168,8 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newListing)
+            body: JSON.stringify(newListing), 
+            credentials: 'include'
         });
 
         createListingPromise.then((response) => {
@@ -237,31 +238,34 @@
             });
     });
 
-    $('#createReviewBtn').click(function () {
-        let newReview = {
-            content: $('#content').val(),
-            rating: $('#rating').val()
+    $('#createListingBtn').click(function () {
+        let newListing = {
+            CarBrand: $('#make').val(),
+            CarModel: $('#version').val(),
+            CarYear: $('#year').val(),
+            Value: $('#price').val(),
+            Description: $('#description').val()
         };
 
-        const createReviewPromise = fetch(_reviewApiUrl, {
+        const createListingPromise = fetch(_carApiUrl, {
             method: 'POST',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newReview)
+            body: JSON.stringify(newListing)
         });
 
-        createReviewPromise.then((response) => {
+        createListingPromise.then((response) => {
             if (response.status === 201) {
-                console.log('Review created successfully.');
-                loadReviewList();
+                console.log('Listing created successfully.');
+                loadCarList();
             } else {
                 return Promise.reject(response);
             }
         })
             .catch((response) => {
-                console.log(`create review; resp code: ${response.status}`);
+                console.log(`create listing; resp code: ${response.status}`);
             });
     });
 
@@ -425,6 +429,16 @@
                 _newTaskItemMsg.fadeOut(10000);
             });
     });
+
+    let run = function () {
+        // then setup a timer load tasks every 1 sec:
+        setInterval(function () {
+            if (_isUserLoggedIn) {
+                loadCarList();
+                loadReviewList();
+            }
+        }, 1000);
+    };
 });
 
 

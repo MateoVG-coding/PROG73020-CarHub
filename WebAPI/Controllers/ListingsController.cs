@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using WebAPI.Entities;
 using WebAPI.Messages;
 
@@ -10,16 +11,20 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ListingsController : ControllerBase
     {
+        private static readonly Random random = new Random();
         private readonly ListingDbContext _dBcontext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
 
         private string GenerateFullUrl(string path)
         {
             return $"{Request.Scheme}://{Request.Host}{path}";
         }
 
-        public ListingsController(ListingDbContext context)
+        public ListingsController(ListingDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _dBcontext = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -52,9 +57,36 @@ namespace WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            // TO DO: Implement a way to store all information into a Listing object
+            /*
+            var userId = HttpContext.Request.Cookies["UserId"];
+
+            // Check if the user ID cookie exists
+            if (string.IsNullOrEmpty(userId))
+            {
+                // Handle the case where the user ID cookie is missing or invalid
+                return Unauthorized();
+            }
+
+            */
+
+            //var user = await _dBcontext.Users.FindAsync(userId);
+            var car = new Cars();
+
+            car.Brand = listing.CarBrand;
+            car.Year = (int)listing.CarYear;
+            car.Model = listing.CarModel;
+            car.Id = random.Next(1, int.MaxValue);
+
 
             var newListing = new Listings();
+            newListing.Username = "Test";
+            newListing.Car = car;
+            newListing.Value = (int)listing.Value;
+            newListing.Description = listing.Description;
+            newListing.PostingDate = DateTime.Now;
+            newListing.listingsId = random.Next(1, int.MaxValue);
+            newListing.CarId = car.Id;
+
 
             _dBcontext.Listings.Add(newListing);
             await _dBcontext.SaveChangesAsync();
