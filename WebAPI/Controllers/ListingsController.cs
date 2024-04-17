@@ -75,7 +75,6 @@ namespace WebAPI.Controllers
             car.Brand = listing.CarBrand;
             car.Year = (int)listing.CarYear;
             car.Model = listing.CarModel;
-            car.Id = random.Next(1, int.MaxValue);
 
 
             var newListing = new Listings();
@@ -84,14 +83,20 @@ namespace WebAPI.Controllers
             newListing.Value = (int)listing.Value;
             newListing.Description = listing.Description;
             newListing.PostingDate = DateTime.Now;
-            newListing.listingsId = random.Next(1, int.MaxValue);
-            newListing.CarId = car.Id;
 
+            try
+            {
+                _dBcontext.Listings.Add(newListing);
+                await _dBcontext.SaveChangesAsync();
 
-            _dBcontext.Listings.Add(newListing);
-            await _dBcontext.SaveChangesAsync();
-
-            return CreatedAtAction("GetListing", new { id = newListing.listingsId }, newListing); ;
+                return CreatedAtAction("GetListing", new { id = newListing.listingsId }, newListing);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         // GET: api/Listings/5

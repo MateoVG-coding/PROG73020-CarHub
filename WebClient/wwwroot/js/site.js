@@ -132,15 +132,16 @@
                 return Promise.reject(response);
             }
         })
-            .then((cars) => {
+            .then((listings) => {
                 _carList.empty();
 
-                if (cars.length === 0) {
-                    _carList.append('<li>No cars available.</li>');
+                if (listings.length === 0) {
+                    _carList.append('<li>No listings available.</li>');
                 } else {
-                    for (let i = 0; i < cars.length; i++) {
-                        _carList.append('<li>' + cars[i].CarBrand + ' ' + cars[i].CarModel + ' - Year: ' +
-                            cars[i].CarYear + ', Price: ' + cars[i].Value + '</li>');
+                    for (let i = 0; i < listings.length; i++) {
+                        // Access properties of the Listings object correctly
+                        _carList.append('<li>' + listings[i].car.brand + ' ' + listings[i].car.model + ' - Year: ' +
+                            listings[i].car.year + ', Price: ' + listings[i].value + '</li>');
                     }
                 }
             })
