@@ -74,36 +74,33 @@
     };
 
     var loadReviewList = function (username) {
-        const loadReviewsPromise = fetch(_reviewApiUrl + '?username=' + username, {
+        const url = _reviewApiUrl + (username ? '?username=' + encodeURIComponent(username) : '');
+        fetch(url, {
             mode: 'cors',
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-
-        loadReviewsPromise.then((response) => {
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                return Promise.reject(response);
-            }
+            headers: { 'Accept': 'application/json' }
         })
-            .then((reviews) => {
+            .then(response => response.json())
+            .then(reviews => {
                 _reviewList.empty();
-
                 if (reviews.length === 0) {
                     _reviewList.append('<li>No reviews available.</li>');
                 } else {
-                    for (let i = 0; i < reviews.length; i++) {
-                        _reviewList.append('<li>' + reviews[i].content + ' - Rating: ' +
-                            reviews[i].rating + '</li>');
-                    }
+                    reviews.forEach(review => {
+                        let listItem = `<li id="review-${review.id}">${review.content} - Rating: ${review.rating} - Posted by: ${review.username}
+                <button type="button" class="btn btn-primary update-review" data-id="${review.id}">Update</button>
+                <button type="button" class="btn btn-danger delete-review" data-id="${review.id}">Delete</button>
+            </li>`;
+                        _reviewList.append(listItem);
+                    });
                 }
             })
-            .catch((response) => {
-                console.log(`fetch review list; resp code: ${response.status}`);
+            .catch(error => {
+                console.error('Error loading reviews:', error);
+                _reviewList.append('<li>Error loading reviews.</li>');
             });
     };
+
+
     var loadApiHome = function () {
         fetch(_carApiUrl, {
             method: 'GET',
@@ -221,7 +218,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newListing), 
+            body: JSON.stringify(newListing),
             credentials: 'include'
         });
 
@@ -363,33 +360,17 @@
             });
     });
 
-    // Line 366-468 review functions
+    // Review management functions
     $('#searchReviewBtn').click(function () {
-        let reviewId = $('#searchReviewId').val();
-        fetch(`${_reviewApiUrl}/${reviewId}`, {
-            method: 'GET',
-            mode: 'cors'
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Review not found.');
-                }
-                return response.json();
-            })
-            .then(review => {
-                alert(`Review Found: ${review.content} - Rating: ${review.rating}`);
-                // update the UI to display the found review details
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Review not found');
-            });
+        let username = $('#searchUsername').val();
+        loadReviewList(username);
     });
 
     $('#submitReviewBtn').click(function () {
         let newReview = {
             content: $('#reviewContent').val(),
-            rating: $('#reviewRating').val()
+            rating: $('#reviewRating').val(),
+            username: $('#reviewUsername').val() // Make sure you have an input field for username in your form
         };
 
         fetch(_reviewApiUrl, {
@@ -408,14 +389,16 @@
             .then(() => {
                 $('#reviewContent').val('');
                 $('#reviewRating').val('');
+                $('#reviewUsername').val(''); // Clear the username field
                 alert('Review submitted successfully');
-                loadReviewList(); // refresh the review list
+                loadReviewList(); // Refresh the review list
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('Failed to submit review');
             });
     });
+
 
     $('#deleteReviewBtn').click(function () {
         let reviewId = $('#reviewIdToDelete').val();
@@ -466,6 +449,80 @@
                 console.log(`update review; resp code: ${response.status}`);
             });
     });
+
+    // Attach event handlers for dynamically created update and delete buttons
+    $('#reviewList').on('click', '.update-review', function () {
+        let reviewId = $(this).data('id');
+        updateReview(reviewId);
+    });
+
+    $('#reviewList').on('click', '.delete-review', function () {
+        let reviewId = $(this).data('id');
+        deleteReview(reviewId);
+    });
+
+    function updateReview(reviewId) {
+        const updatedContent = prompt("Please enter new content for the review:");
+        const updatedRating = prompt("Please enter new rating (1-5):");
+        const updatedUsername = prompt("Please enter your username:");
+        const reviewTime = new Date().toISOString(); // Current date-time in ISO format
+
+        if (!updatedContent || !updatedRating || !updatedUsername) {
+            alert("Please fill all fields correctly.");
+            return;
+        }
+
+        const reviewUpdateData = {
+            id: reviewId,
+            content: updatedContent,
+            rating: parseFloat(updatedRating),
+            username: updatedUsername,
+            reviewTime: reviewTime
+        };
+
+        fetch(`${_reviewApiUrl}/${reviewId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reviewUpdateData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to update review. Status: ${response.status}`);
+                }
+                return response.text(); // Changed from json() to text() to handle no-content responses
+            })
+            .then(text => {
+                if (text) {
+                    const data = JSON.parse(text); // Manually parse the JSON only if there's a response body
+                    console.log('Response:', data);
+                }
+                alert('Review updated successfully!');
+                loadReviewList(); // Refresh the list
+            })
+            .catch(error => {
+                alert('Error updating review: ' + error.message);
+            });
+    }
+
+
+    function deleteReview(reviewId) {
+        if (confirm("Are you sure you want to delete this review?")) {
+            fetch(`${_reviewApiUrl}/${reviewId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to delete review.');
+                    alert('Review deleted successfully!');
+                    loadReviewList(); // Refresh the list
+                })
+                .catch(error => {
+                    alert('Error deleting review: ' + error.message);
+                });
+        }
+    }
+
 
     // Event listener for form submission
     $('#filterForm').submit(function (event) {
