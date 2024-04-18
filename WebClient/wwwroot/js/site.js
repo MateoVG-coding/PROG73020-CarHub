@@ -74,36 +74,32 @@
     };
 
     var loadReviewList = function (username) {
-        const loadReviewsPromise = fetch(_reviewApiUrl + '?username=' + username, {
+        console.log("Loading reviews for username:", username); //log for debugging
+        const url = _reviewApiUrl + (username ? '?username=' + encodeURIComponent(username) : '');
+        fetch(url, {
             mode: 'cors',
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-
-        loadReviewsPromise.then((response) => {
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                return Promise.reject(response);
-            }
+            headers: { 'Accept': 'application/json' }
         })
-            .then((reviews) => {
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load reviews');
+                return response.json();
+            })
+            .then(reviews => {
                 _reviewList.empty();
-
                 if (reviews.length === 0) {
                     _reviewList.append('<li>No reviews available.</li>');
                 } else {
-                    for (let i = 0; i < reviews.length; i++) {
-                        _reviewList.append('<li>' + reviews[i].content + ' - Rating: ' +
-                            reviews[i].rating + '</li>');
-                    }
+                    reviews.forEach(review => {
+                        _reviewList.append(`<li>${review.content} - Rating: ${review.rating}</li>`);
+                    });
                 }
             })
-            .catch((response) => {
-                console.log(`fetch review list; resp code: ${response.status}`);
+            .catch(error => {
+                console.error('Error loading reviews:', error);
+                _reviewList.append('<li>Error loading reviews.</li>');
             });
     };
+
     var loadApiHome = function () {
         fetch(_carApiUrl, {
             method: 'GET',
@@ -221,7 +217,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newListing), 
+            body: JSON.stringify(newListing),
             credentials: 'include'
         });
 
@@ -363,7 +359,7 @@
             });
     });
 
-    // Line 366-468 review functions
+    // Review management functions
     $('#searchReviewBtn').click(function () {
         let reviewId = $('#searchReviewId').val();
         fetch(`${_reviewApiUrl}/${reviewId}`, {
