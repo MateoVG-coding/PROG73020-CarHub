@@ -9,8 +9,8 @@
 
 <!-- Search Reviews -->
 <div class="mb-3">
-    <label for="searchReviewId" class="form-label">Search Review by ID:</label>
-    <input type="number" id="searchReviewId" class="form-control" placeholder="Enter review ID">
+    <label for="searchUsername" class="form-label">Search Reviews by Username:</label>
+    <input type="text" id="searchUsername" class="form-control" placeholder="Enter username">
     <button type="button" class="btn btn-primary" id="searchReviewBtn">Search Review</button>
 </div>
 
@@ -18,6 +18,10 @@
 <div class="col-md-12">
     <h3>Submit a Review</h3>
     <form id="newReviewForm">
+        <div class="mb-3">
+            <label for="reviewUsername" class="form-label">Username:</label>
+            <input type="text" class="form-control" id="reviewUsername" required>
+        </div>
         <div class="mb-3">
             <label for="reviewContent" class="form-label">Review Content:</label>
             <textarea class="form-control" id="reviewContent" required></textarea>
