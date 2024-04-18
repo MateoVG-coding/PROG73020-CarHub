@@ -16,9 +16,16 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Reviews>>> GetAllReviews()
+        public async Task<ActionResult<List<Reviews>>> GetAllReviews(string username)
         {
-            return await _context.Reviews.ToListAsync();
+            if (!string.IsNullOrEmpty(username))
+            {
+                return await _context.Reviews.Where(r => r.Username == username).ToListAsync();
+            }
+            else
+            {
+                return await _context.Reviews.ToListAsync();
+            }
         }
 
         //search a review

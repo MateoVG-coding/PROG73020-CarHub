@@ -17,6 +17,11 @@
     </PackageReference>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebClient\WebClient.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Folder Include="Python Client\" />
   </ItemGroup>
