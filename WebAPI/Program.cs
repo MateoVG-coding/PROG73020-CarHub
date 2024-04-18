@@ -3,14 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Entities;
 using WebAPI.Extensions;
+using WebAPI.Messages;
 using WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureCors();
-
-builder.Services.AddHttpContextAccessor();
-
 
 builder.Services.AddCors(options =>
 {
@@ -22,6 +20,8 @@ builder.Services.AddCors(options =>
                    .AllowAnyHeader();
         });
 });
+
+builder.Services.AddSingleton<SessionManager>();
 
 builder.Services.AddDbContext<ListingDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CarHubDbContext")));

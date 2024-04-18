@@ -11,9 +11,9 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ListingsController : ControllerBase
     {
-        private static readonly Random random = new Random();
         private readonly ListingDbContext _dBcontext;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly SessionManager _sessionManager;
 
 
         private string GenerateFullUrl(string path)
@@ -21,10 +21,11 @@ namespace WebAPI.Controllers
             return $"{Request.Scheme}://{Request.Host}{path}";
         }
 
-        public ListingsController(ListingDbContext context, IHttpContextAccessor httpContextAccessor)
+        public ListingsController(ListingDbContext context, IHttpContextAccessor httpContextAccessor, SessionManager sessionManager)
         {
             _dBcontext = context;
             _httpContextAccessor = httpContextAccessor;
+            _sessionManager = sessionManager;
         }
 
         [HttpGet]
@@ -57,10 +58,7 @@ namespace WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            // TO DO: Havent been able to use the cookies, need to implement cookie usage to access user id
-
-            /*
-            var userId = HttpContext.Request.Cookies["UserId"];
+            var userId = _sessionManager.getSessionId();
 
             // Check if the user ID cookie exists
             if (string.IsNullOrEmpty(userId))
@@ -69,9 +67,10 @@ namespace WebAPI.Controllers
                 return Unauthorized();
             }
 
-            */
 
-            //var user = await _dBcontext.Users.FindAsync(userId);
+
+
+            var user = await _dBcontext.Users.FindAsync(userId);
             var car = new Cars();
 
             car.Brand = listing.CarBrand;
@@ -80,7 +79,7 @@ namespace WebAPI.Controllers
 
 
             var newListing = new Listings();
-            newListing.Username = "Test";
+            newListing.Username = user.UserName;
             newListing.Car = car;
             newListing.Value = (int)listing.Value;
             newListing.Description = listing.Description;

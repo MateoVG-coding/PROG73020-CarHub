@@ -14,14 +14,14 @@ namespace WebAPI.Controllers
     public class AccountApiController : Controller
     {
         private readonly IAuthService _authService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ListingDbContext _dBcontext;
+        private readonly SessionManager _sessionManager;
 
-        public AccountApiController(IAuthService authService, IHttpContextAccessor httpContextAccessor, ListingDbContext context)
+        public AccountApiController(IAuthService authService, ListingDbContext context, SessionManager sessionManager)
         {
             _authService = authService;
-            _httpContextAccessor = httpContextAccessor;
             _dBcontext = context;
+            _sessionManager = sessionManager;
         }
 
         [HttpPost("/api/register")]
@@ -59,12 +59,7 @@ namespace WebAPI.Controllers
                     return NotFound(); // User with the given username not found
                 }
 
-                var cookieOptions = new CookieOptions();
-
-                cookieOptions.Expires = DateTimeOffset.Now.AddHours(1);
-                cookieOptions.Path = "/";
-
-                HttpContext.Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
+                _sessionManager.setSessionId(user.Id);
 
                 return Ok(new { Message = "Authentication successful." });
             }
