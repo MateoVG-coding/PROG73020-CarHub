@@ -260,16 +260,50 @@
             });
     });
 
+    // Open the modal and populate it with listing information
     $('#updateListingBtn').click(function () {
         // Get the Listing ID from the input field
         let listingId = $('#listingId').val();
 
+        // Fetch the listing details using the ID
+        fetch(_carApiUrl + "/" + listingId, {
+            method: 'GET',
+            mode: 'cors'
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json(); // Parse response body as JSON
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+            .then((listing) => {
+                // Populate the modal with the listing details
+                $('#updateMake').val(listing.car.brand);
+                $('#updateVersion').val(listing.car.model);
+                $('#updateYear').val(listing.car.year);
+                $('#updatePrice').val(listing.value);
+                $('#updateDescription').val(listing.description);
+
+                // Open the modal
+                $('#updateListingModal').modal('show');
+            })
+            .catch((error) => {
+                console.error('Error fetching listing details:', error);
+            });
+    });
+
+    // Update the listing when "Save Changes" button is clicked
+    $('#saveChangesBtn').click(function () {
+        // Get the Listing ID from the input field
+        let listingId = $('#listingId').val();
+
         let updatedListing = {
-            CarBrand: $('#make').val(),
-            CarModel: $('#version').val(),
-            CarYear: $('#year').val(),
-            Value: $('#price').val(),
-            Description: $('#description').val()
+            CarBrand: $('#updateMake').val(),
+            CarModel: $('#updateVersion').val(),
+            CarYear: $('#updateYear').val(),
+            Value: $('#updatePrice').val(),
+            Description: $('#updateDescription').val()
         };
 
         const updateListingPromise = fetch(_carApiUrl + "/" + listingId, {
@@ -282,17 +316,20 @@
         });
 
         updateListingPromise.then((response) => {
-            if (response.status === 204) {
+            if (response.ok) {
                 console.log('Listing updated successfully.');
                 loadCarList();
+                // Close the modal after successful update
+                $('#updateListingModal').modal('hide');
             } else {
                 return Promise.reject(response);
             }
         })
-            .catch((response) => {
-                console.log(`update listing; resp code: ${response.status}`);
+            .catch((error) => {
+                console.error('Error updating listing:', error);
             });
     });
+
 
 
     $('#createListingBtn').click(function () {

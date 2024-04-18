@@ -68,11 +68,10 @@ namespace WebAPI.Controllers
             }
 
 
-
-
             var user = await _dBcontext.Users.FindAsync(userId);
-            var car = new Cars();
 
+
+            var car = new Cars();
             car.Brand = listing.CarBrand;
             car.Year = (int)listing.CarYear;
             car.Model = listing.CarModel;
@@ -118,14 +117,33 @@ namespace WebAPI.Controllers
 
         // PUT: api/Listings/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateListing(int id, [FromBody] Listings listing)
+        public async Task<IActionResult> UpdateListing(int id, [FromBody] ListingRequest listing)
         {
-            if (id != listing.listingsId)
+            var userId = _sessionManager.getSessionId();
+
+            // Check if the user ID cookie exists
+            if (string.IsNullOrEmpty(userId))
+            {
+                // Handle the case where the user ID cookie is missing or invalid
+                return Unauthorized();
+            }
+
+            var updatedListing = await _dBcontext.Listings
+            .Include(l => l.Car)
+            .FirstOrDefaultAsync(l => l.listingsId == id);
+
+            if (id != updatedListing.listingsId)
             {
                 return BadRequest();
             }
 
-            _dBcontext.Entry(listing).State = EntityState.Modified;
+            updatedListing.Car.Year = (int)listing.CarYear;
+            updatedListing.Car.Brand = listing.CarBrand;
+            updatedListing.Car.Model = listing.CarModel;
+            updatedListing.Description = listing.Description;
+            updatedListing.Value = (int)listing.Value;
+
+            _dBcontext.Entry(updatedListing).State = EntityState.Modified;
 
             try
             {

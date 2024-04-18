@@ -82,4 +82,45 @@
                 <!-- Your listings will be loaded here by JavaScript -->
             </ul>
         </div>
+
+        <div class="modal fade" id="updateListingModal" tabindex="-1" aria-labelledby="updateListingModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateListingModalLabel">Update Listing</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form for updating listing details -->
+                        <form id="updateListingForm">
+                            <div class="mb-3">
+                                <label for="updateMake" class="form-label">Brand</label>
+                                <input type="text" class="form-control" id="updateMake" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateVersion" class="form-label">Model</label>
+                                <input type="text" class="form-control" id="updateVersion" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateYear" class="form-label">Year</label>
+                                <input type="number" class="form-control" id="updateYear" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updatePrice" class="form-label">Price</label>
+                                <input type="text" class="form-control" id="updatePrice" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateDescription" class="form-label">Description</label>
+                                <input type="text" class="form-control" id="updateDescription" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 </div>
