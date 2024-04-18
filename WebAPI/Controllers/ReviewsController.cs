@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Entities;
+using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {
@@ -9,10 +11,15 @@ namespace WebAPI.Controllers
     public class ReviewsController : ControllerBase
     {
         private readonly ListingDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly SessionManager _sessionManager;
 
-        public ReviewsController(ListingDbContext context)
+        public ReviewsController(ListingDbContext context, IHttpContextAccessor httpContextAccessor, SessionManager sessionManager)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _sessionManager = sessionManager;
+
         }
 
         [HttpGet]
@@ -48,6 +55,16 @@ namespace WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            var userId = _sessionManager.getSessionId();
+
+            // Check if the user ID cookie exists
+            if (string.IsNullOrEmpty(userId))
+            {
+                // Handle the case where the user ID cookie is missing or invalid
+                return Unauthorized();
+            }
+
             _context.Reviews.Add(review);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetReview), new { id = review.Id }, review);
@@ -61,6 +78,16 @@ namespace WebAPI.Controllers
             {
                 return BadRequest();
             }
+
+            var userId = _sessionManager.getSessionId();
+
+            // Check if the user ID cookie exists
+            if (string.IsNullOrEmpty(userId))
+            {
+                // Handle the case where the user ID cookie is missing or invalid
+                return Unauthorized();
+            }
+
             _context.Entry(review).State = EntityState.Modified;
             try
             {
@@ -85,6 +112,16 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> DeleteReview(int id)
         {
             var review = await _context.Reviews.FindAsync(id);
+
+            var userId = _sessionManager.getSessionId();
+
+            // Check if the user ID cookie exists
+            if (string.IsNullOrEmpty(userId))
+            {
+                // Handle the case where the user ID cookie is missing or invalid
+                return Unauthorized();
+            }
+
             if (review == null)
             {
                 return NotFound();
