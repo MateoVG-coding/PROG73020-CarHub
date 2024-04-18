@@ -363,6 +363,60 @@
             });
     });
 
+    // Line 366-468 review functions
+    $('#searchReviewBtn').click(function () {
+        let reviewId = $('#searchReviewId').val();
+        fetch(`${_reviewApiUrl}/${reviewId}`, {
+            method: 'GET',
+            mode: 'cors'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Review not found.');
+                }
+                return response.json();
+            })
+            .then(review => {
+                alert(`Review Found: ${review.content} - Rating: ${review.rating}`);
+                // update the UI to display the found review details
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Review not found');
+            });
+    });
+
+    $('#submitReviewBtn').click(function () {
+        let newReview = {
+            content: $('#reviewContent').val(),
+            rating: $('#reviewRating').val()
+        };
+
+        fetch(_reviewApiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newReview)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response error.');
+                }
+                return response.json();
+            })
+            .then(() => {
+                $('#reviewContent').val('');
+                $('#reviewRating').val('');
+                alert('Review submitted successfully');
+                loadReviewList(); // refresh the review list
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to submit review');
+            });
+    });
+
     $('#deleteReviewBtn').click(function () {
         let reviewId = $('#reviewIdToDelete').val();
 
