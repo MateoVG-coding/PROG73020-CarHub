@@ -36,18 +36,16 @@
 <!-- Car Listings -->
 <div class="container mt-3">
     <div class="row">
-        <!-- Available Listings -->
         <div class="col-md-8">
             <h3>Available Listings</h3>
             <ul id="carList" class="list-group">
-                <!-- Listings will be loaded here -->
+                <!-- Listings will be loaded here by JavaScript -->
             </ul>
         </div>
-        <!-- Create a New Listing -->
+
         <div class="col-md-4">
             <h3>Create a New Listing</h3>
             <form id="newListingForm">
-                <!-- New Listing Form -->
                 <div class="mb-3">
                     <label for="make" class="form-label">Brand</label>
                     <input type="text" class="form-control" id="make" required>
@@ -69,13 +67,26 @@
                     <input type="text" class="form-control" id="description" required>
                 </div>
                 <button type="button" class="btn btn-primary" id="createListingBtn">Create Listing</button>
-                <button type="button" class="btn btn-danger" id="deleteListingBtn">Delete</button>
-                <button type="button" class="btn btn-primary" id="updateListingBtn">Update</button>
             </form>
             <p id="listingItemMsg" class="mt-3"></p>
         </div>
+
+
+        <div class="col-md-12">
+            <h3>My Listings</h3>
+            <form id="myListingsForm">
+                <div class="mb-3">
+                    <label for="listingId" class="form-label">Enter a Listing ID:</label>
+                    <input type="number" class="form-control" id="listingId" required>
+                </div>
+                <button type="button" class="btn btn-danger" id="deleteListingBtn">Delete</button>
+                <button type="button" class="btn btn-primary" id="updateListingBtn">Update</button>
+            </form>
+            <ul id="myListings" class="list-group">
+                <!-- Your listings will be loaded here by JavaScript -->
+            </ul>
+        </div>
     </div>
-</div>
 
 <!-- Reviews -->
 <div class="col-md-12">
