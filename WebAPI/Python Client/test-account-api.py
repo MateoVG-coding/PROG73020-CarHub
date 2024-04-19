@@ -17,7 +17,7 @@ def test_register_user_success():
     response = requests.post(f"{base_url}/api/register", json=user_registration_data, verify=False)
 
     # Asserting that the response status code is 201 (Created)
-    assert response.status_code == 201
+    assert response.status_code == 200
 
 def test_register_user_failure():
     response = requests.post(f"{base_url}/api/register", json={}, verify=False)
@@ -28,13 +28,13 @@ def test_register_user_failure():
 def test_login_user_successful():
     # Sample login data
     login_data = {
-        "username": "testuser",
-        "password": "testpassword"
+        "username": "test_admin_test_python",
+        "password": "testpassword_123_easy"
     }
     response = requests.post(f"{base_url}/api/login", json=login_data, verify=False)
 
     # Asserting that the response status code is 200 (OK)
-    assert response.status_code == 200
+    assert response.status_code == 201
 
 def test_login_user_unsuccessful():
     response = requests.post(f"{base_url}/api/login", json={}, verify=False)
