@@ -201,7 +201,6 @@
     loadCarList();
     loadReviewList();
 
-
     $('#createListingBtn').click(function () {
         let newListing = {
             CarBrand: $('#make').val(),
