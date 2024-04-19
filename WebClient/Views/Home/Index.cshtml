@@ -1,79 +1,56 @@
 ﻿@{
-    ViewData["Title"] = "Car Listings";
+    ViewData["Title"] = "Explore Car Listings";
 }
 
 <h2>@ViewData["Title"]</h2>
 
 <!-- Search Bar -->
-<input type="text" id="searchInput" placeholder="Search a User">
+<input type="text" id="searchInput" placeholder="Search for a User">
 
-<!-- Search Reviews -->
+<!-- Filter Options -->
 <div class="mb-3">
-    <label for="searchUsername" class="form-label">Search Reviews by Username:</label>
-    <input type="text" id="searchUsername" class="form-control" placeholder="Enter username">
-    <button type="button" class="btn btn-primary" id="searchReviewBtn">Search Review</button>
-</div>
+    <h3>Refine Your Search</h3>
+    <form id="filterForm">
+        <div style="display: flex; flex-direction: row;">
+            <div style="margin-right: 20px;">
+                <label for="brandFilter">Brand:</label><br>
+                <input type="text" id="brandFilter" name="brandFilter"><br>
 
-<!-- Reviews -->
-<div class="col-md-12">
-    <h3>Submit a Review</h3>
-    <form id="newReviewForm">
-        <div class="mb-3">
-            <label for="reviewUsername" class="form-label">Username:</label>
-            <input type="text" class="form-control" id="reviewUsername" required>
+                <label for="minYear">Min Year:</label><br>
+                <input type="number" id="minYear" name="minYear"><br>
+            </div>
+            <div>
+                <label for="modelFilter">Model:</label><br>
+                <input type="text" id="modelFilter" name="modelFilter"><br>
+
+                <label for="maxYear">Max Year:</label><br>
+                <input type="number" id="maxYear" name="maxYear"><br>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="reviewContent" class="form-label">Review Content:</label>
-            <textarea class="form-control" id="reviewContent" required></textarea>
+        <div style="margin-top: 10px;">
+            <label for="sortByDate">Sort by Date:</label><br>
+            <input type="checkbox" id="sortByDate" name="sortByDate"><br>
         </div>
-        <div class="mb-3">
-            <label for="reviewRating" class="form-label">Rating:</label>
-            <input type="number" class="form-control" id="reviewRating" min="1" max="5" required>
-        </div>
-        <button type="button" class="btn btn-primary" id="submitReviewBtn">Submit</button>
+        <button type="button" class="btn btn-primary" id="applyFiltersBtn">Apply Filters</button>
     </form>
-    <p id="reviewMsg" class="mt-3"></p>
-    <h3>Reviews</h3>
-    <ul id="reviewList" class="list-group">
-    </ul>
+
 </div>
 
-
-<!-- Filtering Options -->
-<form id="filterForm">
-    <label for="sortByDate">Sort by Date:</label>
-    <input type="checkbox" id="sortByDate" name="sortByDate">
-
-    <label for="minYear">Min Year:</label>
-    <input type="number" id="minYear" name="minYear">
-
-    <label for="maxYear">Max Year:</label>
-    <input type="number" id="maxYear" name="maxYear">
-
-    <label for="brandFilter">Brand:</label>
-    <input type="text" id="brandFilter" name="brandFilter">
-
-    <label for="modelFilter">Model:</label>
-    <input type="text" id="modelFilter" name="modelFilter">
-
-    <label for="usernameFilter">Username:</label>
-    <input type="text" id="usernameFilter" name="usernameFilter">
-
-    <button type="button" id="applyFiltersBtn">Apply Filters</button>
-</form>
-
+<!-- Car Listings -->
 <div class="container mt-3">
     <div class="row">
+        <!-- Available Listings -->
         <div class="col-md-8">
             <h3>Available Listings</h3>
             <ul id="carList" class="list-group">
-                <!-- Listings will be loaded here by JavaScript -->
+                <!-- Listings will be loaded here -->
             </ul>
         </div>
-
+        <!-- Create a New Listing -->
         <div class="col-md-4">
             <h3>Create a New Listing</h3>
             <form id="newListingForm">
+                <!-- New Listing Form -->
                 <div class="mb-3">
                     <label for="make" class="form-label">Brand</label>
                     <input type="text" class="form-control" id="make" required>
@@ -98,61 +75,43 @@
             </form>
             <p id="listingItemMsg" class="mt-3"></p>
         </div>
+    </div>
+</div>
 
-
-        <div class="col-md-12">
-            <h3>My Listings</h3>
-            <form id="myListingsForm">
-                <div class="mb-3">
-                    <label for="listingId" class="form-label">Enter a Listing ID:</label>
-                    <input type="number" class="form-control" id="listingId" required>
+<!-- Reviews -->
+<div class="col-md-12">
+    <h3>Reviews</h3>
+    <!-- Review Search -->
+    <div class="mb-3">
+        <label for="searchUsername" class="form-label">Search Reviews by Username:</label>
+        <input type="text" id="searchUsername" class="form-control" placeholder="Enter username">
+        <button type="button" class="btn btn-primary" id="searchReviewBtn">Search Review</button>
+    </div>
+    <!-- Submit a Review -->
+    <div class="mb-3">
+        <h3>Submit a Review</h3>
+        <form id="newReviewForm">
+            <!-- Review Form -->
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="reviewUsername" class="form-label">Username:</label>
+                    <input type="text" class="form-control" id="reviewUsername" required>
                 </div>
-                <button type="button" class="btn btn-danger" id="deleteListingBtn">Delete</button>
-                <button type="button" class="btn btn-primary" id="updateListingBtn">Update</button>
-            </form>
-            <ul id="myListings" class="list-group">
-                <!-- Your listings will be loaded here by JavaScript -->
-            </ul>
-        </div>
-
-        <div class="modal fade" id="updateListingModal" tabindex="-1" aria-labelledby="updateListingModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="updateListingModalLabel">Update Listing</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Form for updating listing details -->
-                        <form id="updateListingForm">
-                            <div class="mb-3">
-                                <label for="updateMake" class="form-label">Brand</label>
-                                <input type="text" class="form-control" id="updateMake" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="updateVersion" class="form-label">Model</label>
-                                <input type="text" class="form-control" id="updateVersion" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="updateYear" class="form-label">Year</label>
-                                <input type="number" class="form-control" id="updateYear" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="updatePrice" class="form-label">Price</label>
-                                <input type="text" class="form-control" id="updatePrice" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="updateDescription" class="form-label">Description</label>
-                                <input type="text" class="form-control" id="updateDescription" required>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
-                    </div>
+                <div class="col-md-6">
+                    <label for="reviewRating" class="form-label">Rating:</label>
+                    <input type="number" class="form-control" id="reviewRating" min="1" max="5" required>
                 </div>
             </div>
-        </div>
-
+            <div class="mb-3">
+                <label for="reviewContent" class="form-label">Review Content:</label>
+                <textarea class="form-control" id="reviewContent" required></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" id="submitReviewBtn">Submit</button>
+        </form>
+        <p id="reviewMsg" class="mt-3"></p>
+    </div>
+    <!-- Review List -->
+    <ul id="reviewList" class="list-group">
+        <!-- Reviews will be loaded here -->
+    </ul>
 </div>

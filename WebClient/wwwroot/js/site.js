@@ -96,7 +96,6 @@
             })
             .catch(error => {
                 console.error('Error loading reviews:', error);
-                _reviewList.append('<li>Error loading reviews.</li>');
             });
     };
 
