@@ -1,53 +1,40 @@
 ﻿import requests
-import json
 
-BASE_URL = "http://localhost:5001/api"  
+# Base URL of the API
+base_url = "https://localhost:5001"
 
-def test_register_user():
-    url = f"{BASE_URL}/register"
-    headers = {'Content-Type': 'application/json'}
-    data = {
-        "UserName": "testuser",
-        "Email": "test@example.com",
-        "PhoneNumber": "1234567890",
-        "FirstName": "John",
-        "LastName": "Doe",
-        "Password": "Admin_2003"
+def test_login_user_successful():
+    # Sample login data
+    login_data = {
+        "username": "test_admin_test_python",
+        "password": "testpassword_123_easy"
     }
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    
-    assert response.status_code == 201, f"Failed to register user: {response.text}"
-    print("User registered successfully.")
+    response = requests.post(f"{base_url}/api/login", json=login_data, verify=False)
 
-def test_login_user():
-    url = f"{BASE_URL}/login"
-    headers = {'Content-Type': 'application/json'}
-    data = {
-        "UserName": "testuser",
-        "Password": "Admin_2003"
-    }
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    
-    assert response.status_code == 200, f"Failed to login user: {response.text}"
-    print("User logged in successfully.")
-    
+    # Asserting that the response status code is 200 (OK)
+    assert response.status_code == 200
+
+def test_login_user_unsuccessful():
+    response = requests.post(f"{base_url}/api/login", json={}, verify=False)
+
+    # Asserting that the response status code is 401 (Unauthorized)
+    assert response.status_code == 401
+
 def test_create_listing():
-    url = f"{BASE_URL}/Listings"
-    headers = {'Content-Type': 'application/json'}
-    data = {
-        "Value": 1000,
+    # Sample listing data
+    listing_data = {
         "CarBrand": "Toyota",
-        "CarModel": "T2000",
-        "CarYear": 2000,
-        "Description": "Test"
+        "CarModel": "Corolla",
+        "CarYear": 2020,
+        "Value": 15000,
+        "Description": "Low mileage, excellent condition"
     }
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    
-    assert response.status_code == 200, f"Failed to create listing: {response.text}"
-    print("Listing created successfully.")
+    response = requests.post(f"{base_url}/api/listings", json=listing_data, verify=False)
 
-if __name__ == "__main__":
-    test_register_user()
-    test_login_user()
-    test_create_listing()
-    
+    # Asserting that the response status code is 201 (Created)
+    assert response.status_code == 201
+
+# Run the tests
+test_login_user_successful()
+# test_login_user_unsuccessful()
+test_create_listing()

@@ -12,7 +12,7 @@ using WebAPI.Entities;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(ListingDbContext))]
-    [Migration("20240417052542_Carhub")]
+    [Migration("20240419022735_Carhub")]
     partial class Carhub
     {
         /// <inheritdoc />
