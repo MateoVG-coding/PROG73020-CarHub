@@ -51,7 +51,7 @@
                         // Construct HTML for each listing with update and delete buttons
                         let listingHtml = '<li>' +
                             listings[i].car.brand + ' ' + listings[i].car.model + ' - Year: ' +
-                            listings[i].car.year + ', Price: ' + listings[i].value + ', Posted by: ' + listings[i].username +
+                            listings[i].car.year + ', Price: ' + listings[i].value + ', Description: ' + listings[i].description + ' - Posted by: ' + listings[i].username +
                             '</li>';
 
                         // Append the listing HTML to the _carList element
@@ -86,7 +86,7 @@
                     _reviewList.append('<li>No reviews available.</li>');
                 } else {
                     reviews.forEach(review => {
-                        let listItem = `<li id="review-${review.id}">${review.content} - Rating: ${review.rating} - Posted by: ${review.username}
+                        let listItem = `<li id="review-${review.id}">${review.content} - Rating: ${review.rating} - Review on user: ${review.username}
                 <button type="button" class="btn btn-primary update-review" data-id="${review.id}">Update</button>
                 <button type="button" class="btn btn-danger delete-review" data-id="${review.id}">Delete</button>
             </li>`;
@@ -147,7 +147,7 @@
                         // Construct HTML for each listing with update and delete buttons
                         let listingHtml = '<li>' +
                             listings[i].car.brand + ' ' + listings[i].car.model + ' - Year: ' +
-                            listings[i].car.year + ', Price: ' + listings[i].value + ', Posted by: ' + listings[i].username +
+                            listings[i].car.year + ', Price: ' + listings[i].value + ', Description: ' + listings[i].description + ' - Posted by: ' + listings[i].username + 
                             '</li>';
 
                         // Append the listing HTML to the _carList element
@@ -184,7 +184,7 @@
                         // Construct HTML for each listing with update and delete buttons
                         let listingHtml = '<li>' + 'Listing ID: ' + listings[i].listingsId + ' | ' + 'Car: ' +
                             listings[i].car.brand + ' ' + listings[i].car.model + ' - Year: ' +
-                            listings[i].car.year + '- Price: ' + listings[i].value +
+                            listings[i].car.year + ', Price: ' + listings[i].value + ', Description: ' + listings[i].description + '- Posted by: ' + listings[i].username +
                             '</li>';
 
                         // Append the listing HTML to the _carList element
