@@ -31,11 +31,6 @@ namespace WebAPI.Services
 
             var result = await _userManager.CreateAsync(user, userRegistrationRequest.Password);
 
-            if (result.Succeeded)
-            {
-                result = await _userManager.AddToRolesAsync(user, userRegistrationRequest.Roles);
-            }
-
             return result;
         }
 

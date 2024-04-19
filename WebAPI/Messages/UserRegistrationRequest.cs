@@ -21,7 +21,5 @@ namespace WebAPI.Messages
 
         [Required(ErrorMessage = "Phone Number is required")]
         public string? PhoneNumber { get; set; }
-
-        public ICollection<string>? Roles { get; set; }
     }
 }
